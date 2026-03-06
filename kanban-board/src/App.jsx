@@ -6,11 +6,12 @@ function App() {
     const saved=localStorage.getItem("kanbanTasks");
     return saved ? JSON.parse(saved):[];
   });
-  const[theme,setTheme]=useState("light");
-  const toggleTheme=()=>{
-  const newTheme=theme==="light"?"dark":"light";
-  setTheme(newTheme);
-  document.body.className=newTheme;
+  const [theme, setTheme] = useState(() => {
+  const savedTheme = localStorage.getItem("kanbanTheme");
+  return savedTheme ? savedTheme : "light";
+});
+  const toggleTheme = () => {
+  setTheme((prev) => (prev === "light" ? "dark" : "light"));
 };
 const[columns,setColumns]=useState(()=>{
   const saved=localStorage.getItem("kanbanColumns");
@@ -28,6 +29,10 @@ const[columns,setColumns]=useState(()=>{
   useEffect(()=>{
     localStorage.setItem("kanbanColumns",JSON.stringify(columns));
   },[columns]);
+  useEffect(()=>{
+  document.body.className = theme;
+  localStorage.setItem("kanbanTheme", theme); 
+  },[theme]);
   const addColumn=()=>{
     const name=prompt("Enter column name:");
     if (!name) return;
